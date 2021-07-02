@@ -18,7 +18,7 @@ const makeAddAccountRepository = (): AddAccountRepository => {
       const fakeAccount = {
         id: 'valid_id',
         name: 'valid_name',
-        email: 'valid_mail',
+        email: 'valid_email',
         password: 'hashed_password'
       }
       return new Promise(resolve => resolve(fakeAccount))
@@ -51,7 +51,7 @@ describe('DbAddAccount UsesCase', () => {
     const encryptSpy = jest.spyOn(encrypterStub, 'encrypt')
     const accountData = {
       name: 'valid_name',
-      email: 'valid_mail',
+      email: 'valid_email',
       password: 'valid_password'
     }
     await sut.add(accountData)
@@ -63,7 +63,7 @@ describe('DbAddAccount UsesCase', () => {
     jest.spyOn(encrypterStub, 'encrypt').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const accountData = {
       name: 'valid_name',
-      email: 'valid_mail',
+      email: 'valid_email',
       password: 'valid_password'
     }
     const promise = sut.add(accountData)
@@ -75,13 +75,13 @@ describe('DbAddAccount UsesCase', () => {
     const addSpy = jest.spyOn(addAccountRepositoryStub, 'add')
     const accountData = {
       name: 'valid_name',
-      email: 'valid_mail',
+      email: 'valid_email',
       password: 'valid_password'
     }
     await sut.add(accountData)
     expect(addSpy).toHaveBeenCalledWith({
       name: 'valid_name',
-      email: 'valid_mail',
+      email: 'valid_email',
       password: 'hashed_password'
     })
   })
@@ -96,6 +96,22 @@ describe('DbAddAccount UsesCase', () => {
     }
     const promise = sut.add(accountData)
     expect(promise).rejects.toThrow()
+  })
+
+  test('Should return an account on success', async () => {
+    const { sut } = makeSut()
+    const accountData = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password'
+    }
+    const account = await sut.add(accountData)
+    await expect(account).toEqual({
+      id: 'valid_id',
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'hashed_password'
+    })
   })
 
 })
