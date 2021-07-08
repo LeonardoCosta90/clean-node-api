@@ -1,12 +1,17 @@
-import { Authentication } from "../../../domain/usecases/authentication";
+import {
+  Authentication,
+  Controller,
+  EmailValidator,
+  HttpRequest,
+  HttpResponse,
+} from "./login-protocols";
 import {
   badRequest,
+  ok,
   serverError,
   unauthorized,
 } from "../../helpers/http-helper";
-import { Controller, HttpRequest, HttpResponse } from "../../protocols";
-import { EmailValidator } from "../signup/signup-protocols";
-import { MissingParamError, InvalidParamError } from "../../errors";
+import { InvalidParamError, MissingParamError } from "../../errors";
 
 export class LoginController implements Controller {
   private readonly emailValidator: EmailValidator;
@@ -34,6 +39,7 @@ export class LoginController implements Controller {
       if (!accessToken) {
         return unauthorized();
       }
+      return ok({ accessToken });
     } catch (error) {
       return serverError(error);
     }
